@@ -1,0 +1,24 @@
+header{
+    padding: 10px;
+    nav{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        h2{
+            color: #000;
+            font-size: 25px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        button{
+            background-color: #000;
+            padding: 5px;
+            border: none;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 15px;
+            max-width: 100px;
+            width: 100%;
+        }
+    }
+}
