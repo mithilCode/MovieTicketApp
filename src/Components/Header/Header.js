@@ -1,11 +1,9 @@
-import React from 'react'
+import React,{ useState } from 'react'
 import styles from './Header.module.scss';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useEffect } from 'react';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -44,12 +42,12 @@ const Header = () => {
                   <th>Price</th>
                   <th>Total Ticket</th>
                   <th>Total Price</th>
+                  <th>Booking Date</th>
                 </tr>
               </thead>
               <tbody>
                 {
                   selectedValue && selectedValue.map((item, index) => {
-                    console.log('item',item)
                     return (
                       <tr key={index}>
                         <td>{index+1}</td>
@@ -57,6 +55,7 @@ const Header = () => {
                         <td>{item[0].price}</td>
                         <td>{item[1]}</td>
                         <td>{item[1]*item[0].price}</td>
+                        <td>{item[3]}</td>
                       </tr>
                     )
                   })

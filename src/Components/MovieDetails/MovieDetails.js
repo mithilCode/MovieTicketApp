@@ -36,14 +36,14 @@ const MovieDetails = () => {
     const [booking, setBooking] = useState(1);
     const [open, setOpen] = useState(false);
     const [price, setPrice] = useState();
+    const [date, setDate] = useState();
     const navigate = useNavigate();
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
     const dispatch = useDispatch();
-    const { values } = useSelector((state) => state.movie);
     const book = [];
-    const increment = () => {
+    const increment = (e) => {
+        e.preventDefault();
         if (getdata.available_seats <= booking) {
             toast.error("Booking is Full", {
                 position: toast.POSITION.TOP_CENTER
@@ -54,7 +54,8 @@ const MovieDetails = () => {
             setPrice(getdata.price * (booking + 1));
         }
     }
-    const decrement = () => {
+    const decrement = (e) => {
+        e.preventDefault();
         if (booking <= 0) {
             setBooking(0);
         } else {
@@ -70,29 +71,38 @@ const MovieDetails = () => {
         }
         setGetdata(data[total])
     }
-    const handleproceed = () => {
-        if (booking > 0) {
-            toast.success("SuccessFully Booked", {
-                position: toast.POSITION.TOP_CENTER
-            });
-            setOpen(false);
-            book.push(getdata);
-            book.push(booking)
-            book.push(price);
-            dispatch(addValue(book));
-            navigate('/');
+    const getdate = (e) => {
+        setDate(e.target.value)
+    }
+    const handleproceed = (e) => {
+        e.preventDefault();
+        if (date) {
+            if (booking > 0) {
+                toast.success("SuccessFully Booked", {
+                    position: toast.POSITION.TOP_CENTER
+                });
+                setOpen(false);
+                book.push(getdata);
+                book.push(booking)
+                book.push(price);
+                book.push(date);
+                dispatch(addValue(book));
+                navigate('/');
+            } else {
+                toast.error("Select At least 1 Sheat", {
+                    position: toast.POSITION.TOP_CENTER
+                });
+            }
         } else {
-            toast.error("Select At least 1 Sheat", {
+            toast.error("Select Date", {
                 position: toast.POSITION.TOP_CENTER
             });
         }
 
-
     }
     useEffect(() => {
         getcount();
-        console.log(values)
-    }, [total, values])
+    }, [total])
     return (
         <>
             <Header />
@@ -115,17 +125,23 @@ const MovieDetails = () => {
                 </Grid>
                 <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description" >
                     <Box sx={style}>
-                        <h3><MdEventSeat /> Book Seats</h3>
-                        <div className={styles.total_seats}>
-                            <p><span className={styles.user_booking}>{booking}</span></p>
-                        </div>
-                        <div className={styles.btn_group}>
-                            <button onClick={decrement}>Remove</button>
-                            <button onClick={increment}>Add</button>
-                        </div>
-                        <p>Total Avalibal Seats {getdata && getdata.available_seats}</p>
-                        <h3>{price} Rs.</h3>
-                        <button onClick={handleproceed} className={styles.proceed_btn}>Proceed</button>
+                        <form>
+                            <h3><MdEventSeat /> Book Seats</h3>
+                            <div className={styles.total_seats}>
+                                <p><span className={styles.user_booking}>{booking}</span></p>
+                            </div>
+                            <div className={styles.btn_group}>
+                                <button onClick={decrement}>Remove</button>
+                                <button onClick={increment}>Add</button>
+                            </div>
+                            <div className={styles.time_set}>
+                                <h4>Select Booking Date</h4>
+                                <input type="datetime-local" name='date' value={date} onChange={getdate} required />
+                            </div>
+                            <p>Total Avalibal Seats {getdata && getdata.available_seats}</p>
+                            <h3>{price} Rs.</h3>
+                            <button onClick={handleproceed} className={styles.proceed_btn}>Proceed</button>
+                        </form>
                     </Box>
                 </Modal>
             </section>

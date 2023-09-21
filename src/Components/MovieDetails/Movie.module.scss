@@ -102,7 +102,20 @@
     color: #fff;
   }
 }
+.time_set{
+  margin: 10px 0;
+  h4{
 
+  }
+  input{
+    margin-bottom: 10px;
+    max-width: 80%;
+    width: 100%;
+    border: 1px solid ;
+    padding: 5px;
+    border-radius: 6px;
+  }
+}
 @media (max-width: 575.98px) {
   .movie_details {
     img{
