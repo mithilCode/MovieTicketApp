@@ -22,3 +22,24 @@ header{
         }
     }
 }
+.table_set{
+    border: 1px solid;
+    border-collapse: collapse;
+    max-width: 100%;
+    width: 100%;
+    margin: 10px 0;
+    th{
+        font-size: 15px;
+    }
+    th,td{
+        text-align: center;
+        padding: 5px;
+        border: 1px solid;
+    }
+    td{
+        font-size: 12px;
+        &:nth-child(2){
+            text-align: left;
+        }
+    }
+}

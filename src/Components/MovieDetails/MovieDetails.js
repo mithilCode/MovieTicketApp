@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addValue } from '../../Store/slice';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { data } from '../MovieList/data';
@@ -7,13 +9,13 @@ import { Grid } from '@mui/material';
 import { BsDot, } from "react-icons/bs";
 import { BiCategoryAlt } from "react-icons/bi";
 import { IoTicketSharp } from "react-icons/io5";
-import { FaPlus, FaMinus } from "react-icons/fa";
 import Header from '../Header/Header';
 import { MdDateRange, MdEventAvailable, MdEventSeat } from "react-icons/md";
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -31,16 +33,25 @@ const MovieDetails = () => {
     const params = useParams();
     const [total, setTotal] = useState();
     const [getdata, setGetdata] = useState();
-    const [booking, setBooking] = useState(0);
+    const [booking, setBooking] = useState(1);
     const [open, setOpen] = useState(false);
+    const [price, setPrice] = useState();
+    const navigate = useNavigate();
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const dispatch = useDispatch();
+    const { values } = useSelector((state) => state.movie);
+    const book = [];
     const increment = () => {
         if (getdata.available_seats <= booking) {
-            alert("Booking is Full ");
+            toast.error("Booking is Full", {
+                position: toast.POSITION.TOP_CENTER
+            });
             return
         } else {
             setBooking(booking + 1);
+            setPrice(getdata.price * (booking + 1));
         }
     }
     const decrement = () => {
@@ -48,6 +59,7 @@ const MovieDetails = () => {
             setBooking(0);
         } else {
             setBooking(booking - 1);
+            setPrice(price - getdata.price);
         }
     }
     const getcount = async () => {
@@ -64,7 +76,12 @@ const MovieDetails = () => {
                 position: toast.POSITION.TOP_CENTER
             });
             setOpen(false);
-        }else{
+            book.push(getdata);
+            book.push(booking)
+            book.push(price);
+            dispatch(addValue(book));
+            navigate('/');
+        } else {
             toast.error("Select At least 1 Sheat", {
                 position: toast.POSITION.TOP_CENTER
             });
@@ -73,15 +90,16 @@ const MovieDetails = () => {
 
     }
     useEffect(() => {
-        getcount()
-    }, [total])
+        getcount();
+        console.log(values)
+    }, [total, values])
     return (
         <>
             <Header />
             <section className={styles.movie_details}>
                 <Grid container spacing={5} className={styles.movie_listbox}>
                     <Grid item xs={12} md={4} lg={3}>
-                        <img src={getdata && getdata.poster} alt="" />
+                        <img src={getdata && getdata.poster} alt="poster" />
                     </Grid>
                     <Grid item xs={12} md={8} lg={5}>
                         <div className={styles.movie_desc}>
@@ -102,10 +120,11 @@ const MovieDetails = () => {
                             <p><span className={styles.user_booking}>{booking}</span></p>
                         </div>
                         <div className={styles.btn_group}>
-                            <button onClick={decrement}><FaMinus /></button>
-                            <button onClick={increment}><FaPlus /></button>
+                            <button onClick={decrement}>Remove</button>
+                            <button onClick={increment}>Add</button>
                         </div>
                         <p>Total Avalibal Seats {getdata && getdata.available_seats}</p>
+                        <h3>{price} Rs.</h3>
                         <button onClick={handleproceed} className={styles.proceed_btn}>Proceed</button>
                     </Box>
                 </Modal>
